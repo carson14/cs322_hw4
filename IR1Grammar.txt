@@ -1,0 +1,52 @@
+// This is supporting software for CS322 Compilers and Language Design II
+// Copyright (c) Portland State University
+//---------------------------------------------------------------------------
+// For CS322 W'16 (J. Li).
+// 
+
+// IR1 Grammar
+//
+//
+
+Program -> {Func} 
+
+Func    -> <Global> VarList                      // Target Params
+           [VarList]                             // Locals
+           "{" {Inst} <EOL> "}" <EOL>            // Body
+
+VarList -> "(" [<Id> {"," <Id>}] ")" <EOL>
+
+Inst 	-> Dest "=" Src BOP Src                  // Binop          
+        |  Dest "=" UOP Src                    	 // Unop     
+        |  Dest "=" Src                        	 // Move     
+        |  Dest "=" Addr                       	 // Load     
+        |  Addr "=" Src                        	 // Store    
+        |  [Dest "="] "call" <Global> ArgList  	 // Call
+        |  "return" [Src]                      	 // Return
+        |  "if" Src ROP Src "goto" <Label>     	 // CJump    
+        |  "goto" <Label>                      	 // Jump     
+        |  <Label> ":"                         	 // LabelDec 
+
+Src   	-> <Id> | <Temp> | <IntLit> | <BoolLit> | <StrLit> 
+Dest  	-> <Id> | <Temp> 
+Addr  	-> [<IntLit>] "[" Src "]"
+ArgList -> "(" [Src {"," Src}] ")"
+
+BOP 	-> AOP | ROP
+AOP 	-> "+" | "-" | "*" | "/" | "&&" | "||"
+ROP 	-> "==" | "!=" | "<" | "<=" | ">" | >="
+UOP 	-> "-" | "!"
+
+<Global>  = _[A-Za-z][A-Za-z0-9]* 
+<Label>   = [A-Za-z][A-Za-z0-9]* 
+<Id>      = [A-Za-z][A-Za-z0-9]* 
+<Temp>    = t[0-9]+
+<IntLit>  = [0-9]+
+<BoolLit> = true|false
+<StrLit>  = \"(~[\",\n])*\"  
+
+// Pre-Defined Funcitons:
+
+_malloc(size)    // memory allocation
+_printInt(arg)   // print an integer (or a boolean as 0 or 1)
+_printStr(arg)   // print a string literal (arg could be null)

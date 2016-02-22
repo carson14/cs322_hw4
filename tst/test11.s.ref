@@ -1,0 +1,91 @@
+	.text
+			  # _go () (a, b, c, x)
+	.p2align 4,0x90
+	.globl _go
+_go:
+	subq $100,%rsp
+			  #  a = true
+	movq $1,%r10
+	movl %r10d,(%rsp)
+			  #  t1 = !a
+	movl (%rsp),%r10d
+	notq %r10
+	movl %r10d,16(%rsp)
+			  #  b = t1
+	movl 16(%rsp),%r10d
+	movl %r10d,4(%rsp)
+			  #  t2 = true
+	movq $1,%r10
+	movl %r10d,20(%rsp)
+			  #  t3 = false
+	movq $0,%r10
+	movl %r10d,24(%rsp)
+			  #  if a == false goto L1
+	movl (%rsp),%r10d
+	movq $0,%r11
+	cmpq %r11,%r10
+	je _go_L1
+			  #  if b == false goto L1
+	movl 4(%rsp),%r10d
+	movq $0,%r11
+	cmpq %r11,%r10
+	je _go_L1
+			  #  t3 = true
+	movq $1,%r10
+	movl %r10d,24(%rsp)
+			  # L1:
+_go_L1:
+			  #  if t3 == true goto L0
+	movl 24(%rsp),%r10d
+	movq $1,%r11
+	cmpq %r11,%r10
+	je _go_L0
+			  #  if a == true goto L0
+	movl (%rsp),%r10d
+	movq $1,%r11
+	cmpq %r11,%r10
+	je _go_L0
+			  #  t2 = false
+	movq $0,%r10
+	movl %r10d,20(%rsp)
+			  # L0:
+_go_L0:
+			  #  c = t2
+	movl 20(%rsp),%r10d
+	movl %r10d,8(%rsp)
+			  #  if c == false goto L2
+	movl 8(%rsp),%r10d
+	movq $0,%r11
+	cmpq %r11,%r10
+	je _go_L2
+			  #  x = 1
+	movq $1,%r10
+	movl %r10d,12(%rsp)
+			  #  goto L3
+	jmp _go_L3
+			  # L2:
+_go_L2:
+			  #  x = 0
+	movq $0,%r10
+	movl %r10d,12(%rsp)
+			  # L3:
+_go_L3:
+			  #  return x
+	movl 12(%rsp),%eax
+	addq $100,%rsp
+	ret
+			  # _main () 
+	.p2align 4,0x90
+	.globl _main
+_main:
+	subq $12,%rsp
+			  #  t4 = call _go()
+	call _go
+	movl %eax,(%rsp)
+			  #  call _printInt(t4)
+	movl (%rsp),%edi
+	call _printInt
+			  #  return 
+	addq $12,%rsp
+	ret
+			  # Total inst cnt: 58

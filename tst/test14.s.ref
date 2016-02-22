@@ -1,0 +1,54 @@
+	.text
+			  # _foo (i, j) 
+	.p2align 4,0x90
+	.globl _foo
+_foo:
+	subq $24,%rsp
+	movl %edi,(%rsp)
+	movl %esi,4(%rsp)
+			  #  t1 = i + j
+	movl (%rsp),%r10d
+	movl 4(%rsp),%r11d
+	addq %r11,%r10
+	movl %r10d,8(%rsp)
+			  #  return t1
+	movl 8(%rsp),%eax
+	addq $24,%rsp
+	ret
+			  # _main () (b, i, j)
+	.p2align 4,0x90
+	.globl _main
+_main:
+	subq $56,%rsp
+			  #  b = true
+	movq $1,%r10
+	movl %r10d,(%rsp)
+			  #  t2 = call _foo(1, 2)
+	movq $1,%rdi
+	movq $2,%rsi
+	call _foo
+	movl %eax,12(%rsp)
+			  #  i = t2
+	movl 12(%rsp),%r10d
+	movl %r10d,4(%rsp)
+			  #  t3 = 2 * 3
+	movq $2,%r10
+	movq $3,%r11
+	imulq %r11,%r10
+	movl %r10d,16(%rsp)
+			  #  j = t3
+	movl 16(%rsp),%r10d
+	movl %r10d,8(%rsp)
+			  #  call _printBool(b)
+	movl (%rsp),%edi
+	call _printBool
+			  #  call _printInt(i)
+	movl 4(%rsp),%edi
+	call _printInt
+			  #  call _printInt(j)
+	movl 8(%rsp),%edi
+	call _printInt
+			  #  return 
+	addq $56,%rsp
+	ret
+			  # Total inst cnt: 38
