@@ -113,7 +113,7 @@ class CodeGen {
   // - emit code for the body
   //
   static void gen(IR1.Func n) throws Exception {
-	//	allVars = new List<String>(); 
+
     if (n.params.length > X86.argRegs.length)
       throw new GenException("Function has too many paramters: " 
 			     + n.params.length);
@@ -141,6 +141,8 @@ class CodeGen {
 
 	if ((frameSize % 16) == 0)
 	  frameSize += 8;
+
+	x86.emit2("subq", 
 
 	// store the incoming actual args to their frame slots
 
@@ -262,6 +264,7 @@ class CodeGen {
 
     // ... need code ...
 	// call gen_addr()
+	x86.Mem addrcode= gen_addr(n.addr, tempReg1);
 
 	// emit a mov to mvoe the result to dst's stack slot
 
@@ -356,6 +359,8 @@ class CodeGen {
 			     + n.args.length);
 
 	// call to_reg to move args into the arg regs
+
+	// eit a "call" with func's name as the label
 
 	// if retur is expected
 
