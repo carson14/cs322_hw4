@@ -124,14 +124,22 @@ class CodeGen {
     X86.emit1(".globl", f);
     X86.emitLabel(f);
 
-
     // ... need code ...
 	// initialize allVars list to include params and local vars
 	for (IR1.Id p: n.params)
 	  allVars.add(p.toString());
 	for (IR1.Id v: n.locals)
 	  allVars.add(v.toString());
+
 	// allocate a frame for storing all params, vars and temps
+	int instCount = n.code.length;
+	int paramCount = n.params.length;
+	int varCount = n.locals.length;
+	int frameSize = (paramCount + varCount + instCount) * 4;
+
+	if ((frameSize % 16) == 0)
+	  frameSize += 8; 
+
 
 	// store the incoming actual args to their frame slots
 
