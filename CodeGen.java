@@ -125,6 +125,11 @@ class CodeGen {
 
 
     // ... need code ...
+	// initialize allvars list to includ params and local vars
+
+	// allocate a frame for storing all params, vars and temps
+
+	// store the incoming actual args to their frame slots
 
     // emit code for the body
     for (int i = 1; i <= n.code.length; i++) 
@@ -176,7 +181,15 @@ class CodeGen {
   static void gen(IR1.Binop n) throws Exception {
 
     // ... need code ...
+	// add des to allVars if it is not already there
 
+	// for ADD, SUB, MUL, AND, and OR
+
+	// for DIV
+
+	// for ROP's
+
+	// for all cases
   }	
 
   // Unop ---
@@ -194,6 +207,13 @@ class CodeGen {
   static void gen(IR1.Unop n) throws Exception {
 
     // ... need code ...
+	// add dst to allVars if it is not already there
+
+	// call to_reg()
+
+	// generate code for the op
+
+	// emit a mov to move the result to dst's stack slot
 
   }
 
@@ -228,6 +248,9 @@ class CodeGen {
   static void gen(IR1.Load n) throws Exception {
 
     // ... need code ...
+	// call gen_addr()
+
+	// emit a mov to mvoe the result to dst's stack slot
 
   }
 
@@ -243,6 +266,11 @@ class CodeGen {
   static void gen(IR1.Store n) throws Exception {
 
     // ... need code ...
+	// call to_reg()
+
+	// call gen_addr()
+
+	// emit a mov
 
   }
 
@@ -272,6 +300,10 @@ class CodeGen {
 
     // ... need code ...
 
+	// call to_reg()
+
+	// generate a cmp and jump instruction
+
   }	
 
   // Jump ---
@@ -284,6 +316,7 @@ class CodeGen {
   static void gen(IR1.Jump n) throws Exception {
 
     // ... need code ...
+	// generate a jmp to a label
 
   }	
 
@@ -304,6 +337,14 @@ class CodeGen {
   static void gen(IR1.Call n) throws Exception {
 
     // ... need code ...
+	// count args, if more than 6 then fail
+    if (n.args.length > X86.argRegs.length)
+      throw new GenException("Function has too many paramters: " 
+			     + n.args.length);
+
+	// call to_reg to move args into the arg regs
+
+	// if retur is expected
 
   }
 
@@ -318,6 +359,11 @@ class CodeGen {
   static void gen(IR1.Return n) throws Exception {
 
     // ... need code ...
+	// if there is a value, emit a mov to move it ot rax
+
+	// pop the fram
+
+	// emit a ret
 
   }
 
@@ -343,7 +389,13 @@ class CodeGen {
   static void to_reg(IR1.Src n, final X86.Reg tempReg) throws Exception {
 
     // ... need code ...
+	// Id and Temp
 
+	// IntLit
+
+	// BoolLit
+
+	// StrLit
   }
 
   // Addr ---
