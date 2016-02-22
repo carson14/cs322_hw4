@@ -40,7 +40,7 @@ class CodeGen {
 
   // Per-function globals
   //
-  static List<String> allVars; 	    	    // collection of all params, vars, and temps
+  static List<String> allVars; 	    // collection of all params, vars, and temps
   static int frameSize; 		    // stack frame size (in bytes)
   static String fnName; 		    // function's name
 
@@ -110,7 +110,8 @@ class CodeGen {
   //     X86.resize_reg()
   // - emit code for the body
   //
-  static void gen(IR1.Func n) throws Exception { 
+  static void gen(IR1.Func n) throws Exception {
+	//	allVars = new List<String>(); 
     if (n.params.length > X86.argRegs.length)
       throw new GenException("Function has too many paramters: " 
 			     + n.params.length);
@@ -125,8 +126,11 @@ class CodeGen {
 
 
     // ... need code ...
-	// initialize allvars list to includ params and local vars
-
+	// initialize allVars list to include params and local vars
+	for (IR1.Id p: n.params)
+	  allVars.add(p.toString());
+	for (IR1.Id v: n.locals)
+	  allVars.add(v.toString());
 	// allocate a frame for storing all params, vars and temps
 
 	// store the incoming actual args to their frame slots
@@ -410,4 +414,4 @@ class CodeGen {
     to_reg(addr.base, tempReg);
     return new X86.Mem(tempReg, addr.offset);
   }
-
+}
