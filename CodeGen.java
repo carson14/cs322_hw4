@@ -138,8 +138,7 @@ class CodeGen {
 	int frameSize = (paramCount + varCount + instCount) * 4;
 
 	if ((frameSize % 16) == 0)
-	  frameSize += 8; 
-
+	  frameSize += 8;
 
 	// store the incoming actual args to their frame slots
 
