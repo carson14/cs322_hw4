@@ -1,5 +1,4 @@
 
-
 // This is supporting software for CS322 Compilers and Language Design II
 // Copyright (c) Portland State University
 //---------------------------------------------------------------------------
@@ -141,8 +140,8 @@ class CodeGen {
 
 	if ((frameSize % 16) == 0)
 	  frameSize += 8;
-
-	x86.emit2("subq", 
+	//X86.Mem sframe = new X86.Mem(X86.RSP, frameSize);
+	X86.emit2("subq", new X86.Imm(frameSize), X86.RSP);
 
 	// store the incoming actual args to their frame slots
 
@@ -264,7 +263,7 @@ class CodeGen {
 
     // ... need code ...
 	// call gen_addr()
-	x86.Mem addrcode= gen_addr(n.addr, tempReg1);
+	X86.Mem addrcode= gen_addr(n.addr, tempReg1);
 
 	// emit a mov to mvoe the result to dst's stack slot
 
