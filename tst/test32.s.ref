@@ -6,14 +6,14 @@ _foo:
 	subq $36,%rsp
 	movl %edi,(%rsp)
 			  #  t1 = i > 1
-	movl (%rsp),%r10d
+	movslq (%rsp),%r10
 	movq $1,%r11
 	cmpq %r11,%r10
 	setg %r10b
 	movzbl %r10b,%r10d
 	movl %r10d,4(%rsp)
 			  #  if t1 == false goto L0
-	movl 4(%rsp),%r10d
+	movslq 4(%rsp),%r10
 	movq $0,%r11
 	cmpq %r11,%r10
 	je _foo_L0
@@ -21,7 +21,7 @@ _foo:
 	call _bar
 	movl %eax,8(%rsp)
 			  #  return t2
-	movl 8(%rsp),%eax
+	movslq 8(%rsp),%rax
 	addq $36,%rsp
 	ret
 			  #  goto L1
@@ -44,7 +44,7 @@ _bar:
 	call _foo
 	movl %eax,(%rsp)
 			  #  return t3
-	movl (%rsp),%eax
+	movslq (%rsp),%rax
 	addq $8,%rsp
 	ret
 			  # _main () (i)
@@ -57,10 +57,10 @@ _main:
 	call _foo
 	movl %eax,4(%rsp)
 			  #  i = t4
-	movl 4(%rsp),%r10d
+	movslq 4(%rsp),%r10
 	movl %r10d,(%rsp)
 			  #  call _printInt(i)
-	movl (%rsp),%edi
+	movslq (%rsp),%rdi
 	call _printInt
 			  #  return 
 	addq $20,%rsp

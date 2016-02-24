@@ -1,0 +1,20 @@
+11,12c11,12
+< 	movslq (%rsp),%r10
+< 	movslq 4(%rsp),%r11
+---
+> 	movl (%rsp),%r10d
+> 	movl 4(%rsp),%r11d
+16,17c16,17
+< 	movslq 12(%rsp),%r10
+< 	movslq 8(%rsp),%r11
+---
+> 	movl 12(%rsp),%r10d
+> 	movl 8(%rsp),%r11d
+21c21
+< 	movslq 16(%rsp),%rax
+---
+> 	movl 16(%rsp),%eax
+36c36
+< 	movslq (%rsp),%rdi
+---
+> 	movl (%rsp),%edi

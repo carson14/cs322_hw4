@@ -12,7 +12,7 @@ _go:
 	movzbl %r10b,%r10d
 	movl %r10d,(%rsp)
 			  #  if t1 == false goto L0
-	movl (%rsp),%r10d
+	movslq (%rsp),%r10
 	movq $0,%r11
 	cmpq %r11,%r10
 	je _go_L0
@@ -29,14 +29,14 @@ _go_L0:
 	imulq %r11,%r10
 	movl %r10d,4(%rsp)
 			  #  t3 = t2 == 10
-	movl 4(%rsp),%r10d
+	movslq 4(%rsp),%r10
 	movq $10,%r11
 	cmpq %r11,%r10
 	sete %r10b
 	movzbl %r10b,%r10d
 	movl %r10d,8(%rsp)
 			  #  if t3 == false goto L2
-	movl 8(%rsp),%r10d
+	movslq 8(%rsp),%r10
 	movq $0,%r11
 	cmpq %r11,%r10
 	je _go_L2
@@ -67,7 +67,7 @@ _main:
 	call _go
 	movl %eax,(%rsp)
 			  #  call _printInt(t4)
-	movl (%rsp),%edi
+	movslq (%rsp),%rdi
 	call _printInt
 			  #  return 
 	addq $12,%rsp

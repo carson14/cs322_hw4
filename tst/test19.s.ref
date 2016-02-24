@@ -9,36 +9,36 @@ _go:
 	movq $0,%r10
 	movl %r10d,4(%rsp)
 			  #  t1 = n > 0
-	movl (%rsp),%r10d
+	movslq (%rsp),%r10
 	movq $0,%r11
 	cmpq %r11,%r10
 	setg %r10b
 	movzbl %r10b,%r10d
 	movl %r10d,8(%rsp)
 			  #  if t1 == false goto L0
-	movl 8(%rsp),%r10d
+	movslq 8(%rsp),%r10
 	movq $0,%r11
 	cmpq %r11,%r10
 	je _go_L0
 			  #  call _printInt(n)
-	movl (%rsp),%edi
+	movslq (%rsp),%rdi
 	call _printInt
 			  #  t2 = n - 1
-	movl (%rsp),%r10d
+	movslq (%rsp),%r10
 	movq $1,%r11
 	subq %r11,%r10
 	movl %r10d,12(%rsp)
 			  #  t3 = call _back(t2)
-	movl 12(%rsp),%edi
+	movslq 12(%rsp),%rdi
 	call _back
 	movl %eax,16(%rsp)
 			  #  i = t3
-	movl 16(%rsp),%r10d
+	movslq 16(%rsp),%r10
 	movl %r10d,4(%rsp)
 			  # L0:
 _go_L0:
 			  #  return i
-	movl 4(%rsp),%eax
+	movslq 4(%rsp),%rax
 	addq $44,%rsp
 	ret
 			  # _back (n) (i)
@@ -48,11 +48,11 @@ _back:
 	subq $20,%rsp
 	movl %edi,(%rsp)
 			  #  t4 = call _go(n)
-	movl (%rsp),%edi
+	movslq (%rsp),%rdi
 	call _go
 	movl %eax,8(%rsp)
 			  #  i = t4
-	movl 8(%rsp),%r10d
+	movslq 8(%rsp),%r10
 	movl %r10d,4(%rsp)
 			  #  return 0
 	movq $0,%rax
@@ -68,7 +68,7 @@ _main:
 	call _go
 	movl %eax,(%rsp)
 			  #  call _printInt(t5)
-	movl (%rsp),%edi
+	movslq (%rsp),%rdi
 	call _printInt
 			  #  return 
 	addq $12,%rsp

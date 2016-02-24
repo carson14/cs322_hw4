@@ -1,0 +1,42 @@
+12c12
+< 	movslq (%rsp),%r10
+---
+> 	movl (%rsp),%r10d
+19c19
+< 	movslq 8(%rsp),%r10
+---
+> 	movl 8(%rsp),%r10d
+24c24
+< 	movslq (%rsp),%rdi
+---
+> 	movl (%rsp),%edi
+28c28
+< 	movslq 12(%rsp),%rdi
+---
+> 	movl 12(%rsp),%edi
+32,33c32,33
+< 	movslq 4(%rsp),%r10
+< 	movslq 16(%rsp),%r11
+---
+> 	movl 4(%rsp),%r10d
+> 	movl 16(%rsp),%r11d
+37c37
+< 	movslq 20(%rsp),%r10
+---
+> 	movl 20(%rsp),%r10d
+42c42
+< 	movslq 4(%rsp),%rax
+---
+> 	movl 4(%rsp),%eax
+52c52
+< 	movslq (%rsp),%r10
+---
+> 	movl (%rsp),%r10d
+57c57
+< 	movslq 4(%rsp),%rax
+---
+> 	movl 4(%rsp),%eax
+70c70
+< 	movslq (%rsp),%rdi
+---
+> 	movl (%rsp),%edi

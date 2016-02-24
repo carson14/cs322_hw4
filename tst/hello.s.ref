@@ -12,3 +12,4 @@ _main:
 	ret
 _S0:
 	.asciz "Hello World!"
+			  # Total inst cnt: 8

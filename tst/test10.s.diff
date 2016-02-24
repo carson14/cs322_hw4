@@ -1,0 +1,16 @@
+15c15
+< 	movslq (%rsp),%r10
+---
+> 	movl (%rsp),%r10d
+32c32
+< 	movslq 4(%rsp),%r10
+---
+> 	movl 4(%rsp),%r10d
+39c39
+< 	movslq 8(%rsp),%r10
+---
+> 	movl 8(%rsp),%r10d
+70c70
+< 	movslq (%rsp),%rdi
+---
+> 	movl (%rsp),%edi

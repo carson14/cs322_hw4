@@ -11,7 +11,7 @@ _go:
 	call _value
 	movl %eax,(%rsp)
 			  #  return t1
-	movl (%rsp),%eax
+	movslq (%rsp),%rax
 	addq $8,%rsp
 	ret
 			  # _value (i, j, k) 
@@ -23,17 +23,17 @@ _value:
 	movl %esi,4(%rsp)
 	movl %edx,8(%rsp)
 			  #  t2 = i + j
-	movl (%rsp),%r10d
-	movl 4(%rsp),%r11d
+	movslq (%rsp),%r10
+	movslq 4(%rsp),%r11
 	addq %r11,%r10
 	movl %r10d,12(%rsp)
 			  #  t3 = t2 + k
-	movl 12(%rsp),%r10d
-	movl 8(%rsp),%r11d
+	movslq 12(%rsp),%r10
+	movslq 8(%rsp),%r11
 	addq %r11,%r10
 	movl %r10d,16(%rsp)
 			  #  return t3
-	movl 16(%rsp),%eax
+	movslq 16(%rsp),%rax
 	addq $24,%rsp
 	ret
 			  # _main () 
@@ -45,7 +45,7 @@ _main:
 	call _go
 	movl %eax,(%rsp)
 			  #  call _printInt(t4)
-	movl (%rsp),%edi
+	movslq (%rsp),%rdi
 	call _printInt
 			  #  return 
 	addq $12,%rsp

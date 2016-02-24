@@ -9,7 +9,7 @@ _main:
 	call _malloc
 	movl %eax,4(%rsp)
 			  #  a = t1
-	movl 4(%rsp),%r10d
+	movslq 4(%rsp),%r10
 	movl %r10d,(%rsp)
 			  #  t2 = 0 * 4
 	movq $0,%r10
@@ -17,13 +17,13 @@ _main:
 	imulq %r11,%r10
 	movl %r10d,8(%rsp)
 			  #  t3 = a + t2
-	movl (%rsp),%r10d
-	movl 8(%rsp),%r11d
+	movslq (%rsp),%r10
+	movslq 8(%rsp),%r11
 	addq %r11,%r10
 	movl %r10d,12(%rsp)
 			  #  [t3] = 1
 	movq $1,%r10
-	movl 12(%rsp),%r11d
+	movslq 12(%rsp),%r11
 	movl %r10d,(%r11)
 			  #  t4 = 1 * 4
 	movq $1,%r10
@@ -31,13 +31,13 @@ _main:
 	imulq %r11,%r10
 	movl %r10d,16(%rsp)
 			  #  t5 = a + t4
-	movl (%rsp),%r10d
-	movl 16(%rsp),%r11d
+	movslq (%rsp),%r10
+	movslq 16(%rsp),%r11
 	addq %r11,%r10
 	movl %r10d,20(%rsp)
 			  #  [t5] = 2
 	movq $2,%r10
-	movl 20(%rsp),%r11d
+	movslq 20(%rsp),%r11
 	movl %r10d,(%r11)
 			  #  t6 = 0 * 4
 	movq $0,%r10
@@ -45,16 +45,16 @@ _main:
 	imulq %r11,%r10
 	movl %r10d,24(%rsp)
 			  #  t7 = a + t6
-	movl (%rsp),%r10d
-	movl 24(%rsp),%r11d
+	movslq (%rsp),%r10
+	movslq 24(%rsp),%r11
 	addq %r11,%r10
 	movl %r10d,28(%rsp)
 			  #  t8 = [t7]
-	movl 28(%rsp),%r10d
+	movslq 28(%rsp),%r10
 	movslq (%r10),%r11
 	movl %r11d,32(%rsp)
 			  #  call _printInt(t8)
-	movl 32(%rsp),%edi
+	movslq 32(%rsp),%rdi
 	call _printInt
 			  #  t9 = 1 * 4
 	movq $1,%r10
@@ -62,16 +62,16 @@ _main:
 	imulq %r11,%r10
 	movl %r10d,36(%rsp)
 			  #  t10 = a + t9
-	movl (%rsp),%r10d
-	movl 36(%rsp),%r11d
+	movslq (%rsp),%r10
+	movslq 36(%rsp),%r11
 	addq %r11,%r10
 	movl %r10d,40(%rsp)
 			  #  t11 = [t10]
-	movl 40(%rsp),%r10d
+	movslq 40(%rsp),%r10
 	movslq (%r10),%r11
 	movl %r11d,44(%rsp)
 			  #  call _printInt(t11)
-	movl 44(%rsp),%edi
+	movslq 44(%rsp),%rdi
 	call _printInt
 			  #  return 
 	addq $72,%rsp

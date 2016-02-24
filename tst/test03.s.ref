@@ -11,7 +11,7 @@ _main:
 	movl %r10d,8(%rsp)
 			  #  t2 = 2 + t1
 	movq $2,%r10
-	movl 8(%rsp),%r11d
+	movslq 8(%rsp),%r11
 	addq %r11,%r10
 	movl %r10d,12(%rsp)
 			  #  t3 = 9 / 3
@@ -21,12 +21,12 @@ _main:
 	idivq %r11
 	movl %eax,16(%rsp)
 			  #  t4 = t2 - t3
-	movl 12(%rsp),%r10d
-	movl 16(%rsp),%r11d
+	movslq 12(%rsp),%r10
+	movslq 16(%rsp),%r11
 	subq %r11,%r10
 	movl %r10d,20(%rsp)
 			  #  i = t4
-	movl 20(%rsp),%r10d
+	movslq 20(%rsp),%r10
 	movl %r10d,(%rsp)
 			  #  t5 = true
 	movq $1,%r10
@@ -39,7 +39,7 @@ _main:
 	movzbl %r10b,%r10d
 	movl %r10d,28(%rsp)
 			  #  if t6 == true goto L0
-	movl 28(%rsp),%r10d
+	movslq 28(%rsp),%r10
 	movq $1,%r11
 	cmpq %r11,%r10
 	je _main_L0
@@ -54,7 +54,7 @@ _main:
 	movzbl %r10b,%r10d
 	movl %r10d,36(%rsp)
 			  #  if t8 == false goto L1
-	movl 36(%rsp),%r10d
+	movslq 36(%rsp),%r10
 	movq $0,%r11
 	cmpq %r11,%r10
 	je _main_L1
@@ -63,7 +63,7 @@ _main:
 	notq %r10
 	movl %r10d,40(%rsp)
 			  #  if t9 == false goto L1
-	movl 40(%rsp),%r10d
+	movslq 40(%rsp),%r10
 	movq $0,%r11
 	cmpq %r11,%r10
 	je _main_L1
@@ -73,7 +73,7 @@ _main:
 			  # L1:
 _main_L1:
 			  #  if t7 == true goto L0
-	movl 32(%rsp),%r10d
+	movslq 32(%rsp),%r10
 	movq $1,%r11
 	cmpq %r11,%r10
 	je _main_L0
@@ -83,13 +83,13 @@ _main_L1:
 			  # L0:
 _main_L0:
 			  #  b = t5
-	movl 24(%rsp),%r10d
+	movslq 24(%rsp),%r10
 	movl %r10d,4(%rsp)
 			  #  call _printInt(i)
-	movl (%rsp),%edi
+	movslq (%rsp),%rdi
 	call _printInt
 			  #  call _printBool(b)
-	movl 4(%rsp),%edi
+	movslq 4(%rsp),%rdi
 	call _printBool
 			  #  return 
 	addq $104,%rsp
