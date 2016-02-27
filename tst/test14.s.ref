@@ -7,12 +7,12 @@ _foo:
 	movl %edi,(%rsp)
 	movl %esi,4(%rsp)
 			  #  t1 = i + j
-	movl (%rsp),%r10d
-	movl 4(%rsp),%r11d
+	movslq (%rsp),%r10
+	movslq 4(%rsp),%r11
 	addq %r11,%r10
 	movl %r10d,8(%rsp)
 			  #  return t1
-	movl 8(%rsp),%eax
+	movslq 8(%rsp),%rax
 	addq $24,%rsp
 	ret
 			  # _main () (b, i, j)
@@ -29,7 +29,7 @@ _main:
 	call _foo
 	movl %eax,12(%rsp)
 			  #  i = t2
-	movl 12(%rsp),%r10d
+	movslq 12(%rsp),%r10
 	movl %r10d,4(%rsp)
 			  #  t3 = 2 * 3
 	movq $2,%r10
@@ -37,16 +37,16 @@ _main:
 	imulq %r11,%r10
 	movl %r10d,16(%rsp)
 			  #  j = t3
-	movl 16(%rsp),%r10d
+	movslq 16(%rsp),%r10
 	movl %r10d,8(%rsp)
 			  #  call _printBool(b)
-	movl (%rsp),%edi
+	movslq (%rsp),%rdi
 	call _printBool
 			  #  call _printInt(i)
-	movl 4(%rsp),%edi
+	movslq 4(%rsp),%rdi
 	call _printInt
 			  #  call _printInt(j)
-	movl 8(%rsp),%edi
+	movslq 8(%rsp),%rdi
 	call _printInt
 			  #  return 
 	addq $56,%rsp

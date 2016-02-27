@@ -1,0 +1,94 @@
+11c11
+< 	movslq (%rsp),%rdi
+---
+> 	movl (%rsp),%edi
+26c26
+< 	movslq 8(%rsp),%r10
+---
+> 	movl 8(%rsp),%r10d
+33c33
+< 	movslq 12(%rsp),%r10
+---
+> 	movl 12(%rsp),%r10d
+41,42c41,42
+< 	movslq (%rsp),%r10
+< 	movslq 16(%rsp),%r11
+---
+> 	movl (%rsp),%r10d
+> 	movl 16(%rsp),%r11d
+47c47
+< 	movslq 20(%rsp),%r11
+---
+> 	movl 20(%rsp),%r11d
+55,56c55,56
+< 	movslq (%rsp),%r10
+< 	movslq 24(%rsp),%r11
+---
+> 	movl (%rsp),%r10d
+> 	movl 24(%rsp),%r11d
+61c61
+< 	movslq 28(%rsp),%r11
+---
+> 	movl 28(%rsp),%r11d
+69,70c69,70
+< 	movslq 4(%rsp),%r10
+< 	movslq 32(%rsp),%r11
+---
+> 	movl 4(%rsp),%r10d
+> 	movl 32(%rsp),%r11d
+75c75
+< 	movslq 36(%rsp),%r11
+---
+> 	movl 36(%rsp),%r11d
+83,84c83,84
+< 	movslq 4(%rsp),%r10
+< 	movslq 40(%rsp),%r11
+---
+> 	movl 4(%rsp),%r10d
+> 	movl 40(%rsp),%r11d
+89c89
+< 	movslq 44(%rsp),%r11
+---
+> 	movl 44(%rsp),%r11d
+97,98c97,98
+< 	movslq (%rsp),%r10
+< 	movslq 48(%rsp),%r11
+---
+> 	movl (%rsp),%r10d
+> 	movl 48(%rsp),%r11d
+102c102
+< 	movslq 52(%rsp),%r10
+---
+> 	movl 52(%rsp),%r10d
+106c106
+< 	movslq 56(%rsp),%rdi
+---
+> 	movl 56(%rsp),%edi
+114,115c114,115
+< 	movslq 4(%rsp),%r10
+< 	movslq 60(%rsp),%r11
+---
+> 	movl 4(%rsp),%r10d
+> 	movl 60(%rsp),%r11d
+119c119
+< 	movslq 64(%rsp),%r10
+---
+> 	movl 64(%rsp),%r10d
+123c123
+< 	movslq 68(%rsp),%rdi
+---
+> 	movl 68(%rsp),%edi
+131,132c131,132
+< 	movslq (%rsp),%r10
+< 	movslq 72(%rsp),%r11
+---
+> 	movl (%rsp),%r10d
+> 	movl 72(%rsp),%r11d
+136c136
+< 	movslq 76(%rsp),%r10
+---
+> 	movl 76(%rsp),%r10d
+140c140
+< 	movslq 80(%rsp),%rax
+---
+> 	movl 80(%rsp),%eax

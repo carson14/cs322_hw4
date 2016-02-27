@@ -9,7 +9,7 @@ _go:
 	call _value
 	movl %eax,(%rsp)
 			  #  return t1
-	movl (%rsp),%eax
+	movslq (%rsp),%rax
 	addq $8,%rsp
 	ret
 			  # _value (cond) (i, j, k)
@@ -25,24 +25,24 @@ _value:
 	movq $6,%r10
 	movl %r10d,8(%rsp)
 			  #  if cond == false goto L0
-	movl (%rsp),%r10d
+	movslq (%rsp),%r10
 	movq $0,%r11
 	cmpq %r11,%r10
 	je _value_L0
 			  #  k = i
-	movl 4(%rsp),%r10d
+	movslq 4(%rsp),%r10
 	movl %r10d,12(%rsp)
 			  #  goto L1
 	jmp _value_L1
 			  # L0:
 _value_L0:
 			  #  k = j
-	movl 8(%rsp),%r10d
+	movslq 8(%rsp),%r10
 	movl %r10d,12(%rsp)
 			  # L1:
 _value_L1:
 			  #  return k
-	movl 12(%rsp),%eax
+	movslq 12(%rsp),%rax
 	addq $52,%rsp
 	ret
 			  # _main () 
@@ -54,7 +54,7 @@ _main:
 	call _go
 	movl %eax,(%rsp)
 			  #  call _printInt(t2)
-	movl (%rsp),%edi
+	movslq (%rsp),%rdi
 	call _printInt
 			  #  return 
 	addq $12,%rsp

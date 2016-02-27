@@ -6,7 +6,7 @@ _foo:
 	subq $12,%rsp
 	movl %edi,(%rsp)
 			  #  return i
-	movl (%rsp),%eax
+	movslq (%rsp),%rax
 	addq $12,%rsp
 	ret
 			  # _bar (i) (x)
@@ -19,7 +19,7 @@ _bar:
 	movq $2,%r10
 	movl %r10d,4(%rsp)
 			  #  return x
-	movl 4(%rsp),%eax
+	movslq 4(%rsp),%rax
 	addq $24,%rsp
 	ret
 			  # _main () (i, j)
@@ -32,20 +32,20 @@ _main:
 	call _foo
 	movl %eax,8(%rsp)
 			  #  i = t1
-	movl 8(%rsp),%r10d
+	movslq 8(%rsp),%r10
 	movl %r10d,(%rsp)
 			  #  t2 = call _bar(1)
 	movq $1,%rdi
 	call _bar
 	movl %eax,12(%rsp)
 			  #  j = t2
-	movl 12(%rsp),%r10d
+	movslq 12(%rsp),%r10
 	movl %r10d,4(%rsp)
 			  #  call _printInt(i)
-	movl (%rsp),%edi
+	movslq (%rsp),%rdi
 	call _printInt
 			  #  call _printInt(j)
-	movl 4(%rsp),%edi
+	movslq 4(%rsp),%rdi
 	call _printInt
 			  #  return 
 	addq $36,%rsp

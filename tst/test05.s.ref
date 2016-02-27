@@ -8,40 +8,40 @@ _main:
 	movq $1,%r10
 	movl %r10d,(%rsp)
 			  #  t1 = r
-	movl (%rsp),%r10d
+	movslq (%rsp),%r10
 	movl %r10d,4(%rsp)
 			  #  t2 = t1 + r
-	movl 4(%rsp),%r10d
-	movl (%rsp),%r11d
+	movslq 4(%rsp),%r10
+	movslq (%rsp),%r11
 	addq %r11,%r10
 	movl %r10d,8(%rsp)
 			  #  t3 = t2 + r
-	movl 8(%rsp),%r10d
-	movl (%rsp),%r11d
+	movslq 8(%rsp),%r10
+	movslq (%rsp),%r11
 	addq %r11,%r10
 	movl %r10d,12(%rsp)
 			  #  t4 = t3 + r
-	movl 12(%rsp),%r10d
-	movl (%rsp),%r11d
+	movslq 12(%rsp),%r10
+	movslq (%rsp),%r11
 	addq %r11,%r10
 	movl %r10d,16(%rsp)
 			  #  t5 = t4 + r
-	movl 16(%rsp),%r10d
-	movl (%rsp),%r11d
+	movslq 16(%rsp),%r10
+	movslq (%rsp),%r11
 	addq %r11,%r10
 	movl %r10d,20(%rsp)
 			  #  t6 = t5 + r
-	movl 20(%rsp),%r10d
-	movl (%rsp),%r11d
+	movslq 20(%rsp),%r10
+	movslq (%rsp),%r11
 	addq %r11,%r10
 	movl %r10d,24(%rsp)
 			  #  r = t5 + r
-	movl 20(%rsp),%r10d
-	movl (%rsp),%r11d
+	movslq 20(%rsp),%r10
+	movslq (%rsp),%r11
 	addq %r11,%r10
 	movl %r10d,(%rsp)
 			  #  call _printInt(r)
-	movl (%rsp),%edi
+	movslq (%rsp),%rdi
 	call _printInt
 			  #  return 
 	addq $44,%rsp

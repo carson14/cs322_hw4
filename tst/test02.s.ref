@@ -14,13 +14,13 @@ _main:
 	movq $6,%r10
 	movl %r10d,8(%rsp)
 			  #  call _printBool(b)
-	movl (%rsp),%edi
+	movslq (%rsp),%rdi
 	call _printBool
 			  #  call _printInt(i)
-	movl 4(%rsp),%edi
+	movslq 4(%rsp),%rdi
 	call _printInt
 			  #  call _printInt(j)
-	movl 8(%rsp),%edi
+	movslq 8(%rsp),%rdi
 	call _printInt
 			  #  return 
 	addq $40,%rsp
