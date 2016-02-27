@@ -359,7 +359,7 @@ class CodeGen {
 
 	// call to_reg to move args into the arg regs
 	for (IR1.Src arg: n.args)
-	  to_reg(arg, tempReg1);
+	  to_reg(arg, X86.RDI);
 	// emit a "call" with func's name as the label
 	X86.emit1("call", new X86.Label(n.gname.toString()));
 	// if retur is expected
@@ -414,24 +414,25 @@ class CodeGen {
     // ... need code ...
 	// Id and Temp
 	if (n instanceof IR1.Id || n instanceof IR1.Temp) {
-
+	  int idx = allVars.indexOf(n.toString());
+	  X86.emit2("movslq", new X86.Mem(X86.RSP, 4*idx), tempReg); 
 	}
 	// IntLit
 	if (n instanceof IR1.IntLit)
-	  X86.emit2("movq", new X86.Imm(((IR1.IntLit) n).i), X86.RDI);
+	  X86.emit2("movq", new X86.Imm(((IR1.IntLit) n).i), tempReg);
 
 	// BoolLit
 	if (n instanceof IR1.BoolLit) {
 	  int bval = 0;
 	  if (((IR1.BoolLit) n).b) bval = 1;
-	  X86.emit2("movq", new X86.Imm(bval), X86.RDI);
+	  X86.emit2("movq", new X86.Imm(bval), tempReg);
 	}
 	// StrLit
 	if (n instanceof IR1.StrLit) {
 	  String str = ((IR1.StrLit) n).s;
 	  stringLiterals.add(str);
 	  X86.Label lb = new X86.Label("_S" + stringLiterals.indexOf(str));
-	  X86.emit2("leaq", new X86.AddrName(lb.toString()), X86.RDI);
+	  X86.emit2("leaq", new X86.AddrName(lb.toString()), tempReg);
 	}
   }
 
