@@ -363,6 +363,8 @@ class CodeGen {
 	// emit a "call" with func's name as the label
 	X86.emit1("call", new X86.Label(n.gname.toString()));
 	// if retur is expected
+	if (n.rdst != null) {
+	}
 
   }
 
@@ -411,16 +413,26 @@ class CodeGen {
 
     // ... need code ...
 	// Id and Temp
+	if (n instanceof IR1.Id || n instanceof IR1.Temp) {
 
+	}
 	// IntLit
+	if (n instanceof IR1.IntLit)
+	  X86.emit2("movq", new X86.Imm(((IR1.IntLit) n).i), X86.RDI);
 
 	// BoolLit
-
+	if (n instanceof IR1.BoolLit) {
+	  int bval = 0;
+	  if (((IR1.BoolLit) n).b) bval = 1;
+	  X86.emit2("movq", new X86.Imm(bval), X86.RDI);
+	}
 	// StrLit
-	String str = ((IR1.StrLit) n).s;
-	stringLiterals.add(str);
-	X86.Label lb = new X86.Label("_S" + stringLiterals.indexOf(str));
-	X86.emit2("leaq", new X86.AddrName(lb.toString()), X86.RDI);
+	if (n instanceof IR1.StrLit) {
+	  String str = ((IR1.StrLit) n).s;
+	  stringLiterals.add(str);
+	  X86.Label lb = new X86.Label("_S" + stringLiterals.indexOf(str));
+	  X86.emit2("leaq", new X86.AddrName(lb.toString()), X86.RDI);
+	}
   }
 
   // Addr ---
