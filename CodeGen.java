@@ -112,7 +112,7 @@ class CodeGen {
   // - emit code for the body
   //
   static void gen(IR1.Func n) throws Exception {
-
+	allVars = new ArrayList<String>();
     if (n.params.length > X86.argRegs.length)
       throw new GenException("Function has too many paramters: " 
 			     + n.params.length);
@@ -136,7 +136,7 @@ class CodeGen {
 	int instCount = n.code.length;
 	int paramCount = n.params.length;
 	int varCount = n.locals.length;
-	int frameSize = (paramCount + varCount + instCount) * 4;
+    frameSize = (paramCount + varCount + instCount) * 4;
 
 	if ((frameSize % 16) == 0)
 	  frameSize += 8;
@@ -336,7 +336,7 @@ class CodeGen {
   }	
 
   // Call ---
-  //  String name;
+  //  Global gname;
   //  Src[] args;
   //  Dest rdst;
   //
@@ -358,9 +358,10 @@ class CodeGen {
 			     + n.args.length);
 
 	// call to_reg to move args into the arg regs
-
-	// eit a "call" with func's name as the label
-
+	for (IR1.Src arg: n.args)
+	  to_reg(arg, tempReg1);
+	// emit a "call" with func's name as the label
+	X86.emit1("call", new X86.Label(n.gname.toString()));
 	// if retur is expected
 
   }
@@ -377,10 +378,13 @@ class CodeGen {
 
     // ... need code ...
 	// if there is a value, emit a mov to move it ot rax
-
+	if (n.val != null) {
+	  X86.emit("mov");
+	}
 	// pop the fram
-
+	X86.emit2("addq", new X86.Imm(frameSize), X86.RSP);
 	// emit a ret
+	X86.emit0("ret");
 
   }
 
@@ -413,6 +417,10 @@ class CodeGen {
 	// BoolLit
 
 	// StrLit
+	String str = ((IR1.StrLit) n).s;
+	stringLiterals.add(str);
+	X86.Label lb = new X86.Label("_S" + stringLiterals.indexOf(str));
+	X86.emit2("leaq", new X86.AddrName(lb.toString()), X86.RDI);
   }
 
   // Addr ---
