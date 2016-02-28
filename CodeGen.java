@@ -196,14 +196,55 @@ class CodeGen {
 
     // ... need code ...
 	// add des to allVars if it is not already there
+	if(!allVars.contains(n.dst.toString()))
+	  allVars.add(n.dst.toString());
 
-	// for ADD, SUB, MUL, AND, and OR
+	int idx = allVars.indexOf(n.dst.toString());
+ 
+	if (n.op instanceof IR1.AOP) {
+	  // for DIV
+	  if (n.op == IR1.AOP.DIV) {
+		to_reg(n.src1, X86.RAX);
+		X86.emit0("cqto");
+		to_reg(n.src2, tempReg2);
+		X86.emit1("idivq", tempReg2);
+	    X86.emit2("movl", X86.EAX, new X86.Mem(X86.RSP, idx*4)); 
 
-	// for DIV
-
+	  }
+	  // for ADD, SUB, MUL, AND, OR
+	  else {
+		to_reg(n.src1, tempReg1);
+		to_reg(n.src2, tempReg2);
+	    switch ((IR1.AOP) n.op) {
+		  case ADD: X86.emit2("addq", tempReg2, tempReg1); break;
+		  case SUB: X86.emit2("subq", tempReg2, tempReg1); break;
+		  case MUL: X86.emit2("imulq", tempReg2, tempReg1); break;
+	      case AND:
+	      case OR:
+	    }
+    	X86.emit2("movl", new X86.Reg(10 , X86.Size.L), new X86.Mem(X86.RSP, idx*4)); 
+	  }
+	}
 	// for ROP's
+	if (n.op instanceof IR1.ROP) {
+		to_reg(n.src1, tempReg1);
+		to_reg(n.src2, tempReg2);
+		X86.emit2("cmpq", tempReg2, tempReg1);
+		switch ((IR1.ROP) n.op) {
+		  case GT: X86.emit1("setg", new X86.Reg(10, X86.Size.B)); break;
+		  case GE:
+		  case LT: X86.emit1("setl", new X86.Reg(10, X86.Size.B)); break;
+		  case LE:
+		  case EQ:
+		  case NE:
+	   }
+	   X86.emit2("movzbl", new X86.Reg(10, X86.Size.B), new X86.Reg(10, X86.Size.L));
+	   X86.emit2("movl", new X86.Reg(10 , X86.Size.L), new X86.Mem(X86.RSP, idx*4)); 
+	}
 
 	// for all cases
+	//int idx = allVars.indexOf(n.dst.toString());
+	//X86.emit2("movl", new X86.Reg(10 , X86.Size.L), new X86.Mem(X86.RSP, idx*4)); 
   }	
 
   // Unop ---
@@ -219,16 +260,24 @@ class CodeGen {
   //   (pay attention to size info)
   //  
   static void gen(IR1.Unop n) throws Exception {
-
+    String varName = n.dst.toString();
     // ... need code ...
 	// add dst to allVars if it is not already there
+    if (!allVars.contains(varName))
+      allVars.add(varName);
+
+	int idx = allVars.indexOf(n.dst.toString());
 
 	// call to_reg()
+    to_reg(n.src, tempReg1);
 
 	// generate code for the op
-
+	if (n.op == IR1.UOP.NOT)
+	  X86.emit1("notq", tempReg1);
+	else if (n.op == IR1.UOP.NEG) {
+	}
 	// emit a mov to move the result to dst's stack slot
-
+    X86.emit2("movl", new X86.Reg(10 , X86.Size.L), new X86.Mem(X86.RSP, idx*4)); 
   }
 
   // Move ---
@@ -316,9 +365,12 @@ class CodeGen {
     // ... need code ...
 
 	// call to_reg()
+	to_reg(n.src1, tempReg1);
+	to_reg(n.src2, tempReg2);
 
 	// generate a cmp and jump instruction
-
+	X86.emit2("cmpq", tempReg2, tempReg1);
+	X86.emit1("je", new X86.Label(fnName + "_" + n.lab.name));
   }	
 
   // Jump ---
