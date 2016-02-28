@@ -36,6 +36,7 @@ class CodeGen {
   // Per-program globals
   //
   static List<String> stringLiterals; 	    // collection of all string literals
+  //  static List<String> funcList;
   static final X86.Reg tempReg1 = X86.R10;  // two random scratch registers
   static final X86.Reg tempReg2 = X86.R11;  //
 
@@ -69,6 +70,7 @@ class CodeGen {
   //
   public static void gen(IR1.Program n) throws Exception { 
     stringLiterals = new ArrayList<String>();
+	//	funcList = new ArrayList<String>();
     X86.emit0(".text");
     for (IR1.Func f: n.funcs)
       gen(f);
@@ -117,6 +119,7 @@ class CodeGen {
       throw new GenException("Function has too many paramters: " 
 			     + n.params.length);
     fnName = n.gname.toString();
+	//	funcList.add(fnName);
     System.out.print("\t\t\t  # " + n.header());
 
     // emit the function header
@@ -125,7 +128,6 @@ class CodeGen {
     X86.emit1(".globl", f);
     X86.emitLabel(f);
 
-    // ... need code ...
 	// initialize allVars list to include params and local vars
 	for (IR1.Id p: n.params)
 	  allVars.add(p.toString());
@@ -144,7 +146,16 @@ class CodeGen {
 	X86.emit2("subq", new X86.Imm(frameSize), X86.RSP);
 
 	// store the incoming actual args to their frame slots
-
+	int argRegIdx = 5;
+	for (int i=0; i < paramCount; i++) {
+	  if (argRegIdx == 1)
+	    X86.emit2("movl", new X86.Reg(8, X86.Size.L), new X86.Mem(X86.RSP, i*4)); 
+	  else if (argRegIdx == 0)
+	    X86.emit2("movl", new X86.Reg(9, X86.Size.L), new X86.Mem(X86.RSP, i*4)); 
+	  else
+	    X86.emit2("movl", new X86.Reg(argRegIdx, X86.Size.L), new X86.Mem(X86.RSP, i*4)); 
+	  argRegIdx--;
+	}
     // emit code for the body
     for (int i = 1; i <= n.code.length; i++) 
       gen(n.code[i-1]);
@@ -193,8 +204,6 @@ class CodeGen {
   //      are integers)
   //
   static void gen(IR1.Binop n) throws Exception {
-
-    // ... need code ...
 	// add des to allVars if it is not already there
 	if(!allVars.contains(n.dst.toString()))
 	  allVars.add(n.dst.toString());
@@ -241,10 +250,6 @@ class CodeGen {
 	   X86.emit2("movzbl", new X86.Reg(10, X86.Size.B), new X86.Reg(10, X86.Size.L));
 	   X86.emit2("movl", new X86.Reg(10 , X86.Size.L), new X86.Mem(X86.RSP, idx*4)); 
 	}
-
-	// for all cases
-	//int idx = allVars.indexOf(n.dst.toString());
-	//X86.emit2("movl", new X86.Reg(10 , X86.Size.L), new X86.Mem(X86.RSP, idx*4)); 
   }	
 
   // Unop ---
@@ -261,7 +266,7 @@ class CodeGen {
   //  
   static void gen(IR1.Unop n) throws Exception {
     String varName = n.dst.toString();
-    // ... need code ...
+
 	// add dst to allVars if it is not already there
     if (!allVars.contains(varName))
       allVars.add(varName);
@@ -335,8 +340,6 @@ class CodeGen {
   // - emit a "mov" (pay attention to size info)
   //
   static void gen(IR1.Store n) throws Exception {
-
-    // ... need code ...
 	// call to_reg()
 	to_reg(n.src, tempReg1);
 
@@ -370,9 +373,6 @@ class CodeGen {
   //   . also, IR1 and X86 names for the cond suffixes are the same
   //
   static void gen(IR1.CJump n) throws Exception {
-
-    // ... need code ...
-
 	// call to_reg()
 	to_reg(n.src1, tempReg1);
 	to_reg(n.src2, tempReg2);
@@ -390,8 +390,6 @@ class CodeGen {
   //   . again, adding func's name in front of IR1's label name
   //
   static void gen(IR1.Jump n) throws Exception {
-
-    // ... need code ...
 	// generate a jmp to a label
 	X86.emit1("jmp", new X86.Label(fnName + "_" + n.lab.name));
   }	
@@ -411,18 +409,26 @@ class CodeGen {
   //     (pay attention to size info)
   //
   static void gen(IR1.Call n) throws Exception {
-
-    // ... need code ...
 	// count args, if more than 6 then fail
     if (n.args.length > X86.argRegs.length)
       throw new GenException("Function has too many paramters: " 
 			     + n.args.length);
 
-	// call to_reg to move args into the arg regs
-	for (IR1.Src arg: n.args)
-	  to_reg(arg, X86.RDI);
+	// call to_reg to move args into arg regs
+	int argRegIdx = 5;
+	for (int i=0; i < n.args.length; i++) {
+	  if (argRegIdx == 1)
+	    to_reg(n.args[i], new X86.Reg(8)); 
+	  else if (argRegIdx == 0)
+	    to_reg(n.args[i], new X86.Reg(9)); 
+	  else
+	    to_reg(n.args[i], new X86.Reg(argRegIdx)); 
+	  argRegIdx--;
+	}
+
 	// emit a "call" with func's name as the label
 	X86.emit1("call", new X86.Label(n.gname.toString()));
+
 	// if retur is expected
 	if (n.rdst != null) {
       String varName = n.rdst.toString();
@@ -430,7 +436,6 @@ class CodeGen {
         allVars.add(varName);
 
 	  int idx = allVars.indexOf(n.rdst.toString());
-
 	  X86.emit2("movl", X86.EAX, new X86.Mem(X86.RSP, idx*4));
 	}
 
