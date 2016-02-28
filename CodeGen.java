@@ -285,7 +285,7 @@ class CodeGen {
   //  Src src;
   //
   // Guideline:
-  // - add dst to 'allVars' if it is not not already there
+  // - add dst to 'allVars' if it is not already there
   // - call to_reg() to generate code for the src
   // - emit a "mov" to move the result to dst's stack slot
   //  
@@ -304,18 +304,24 @@ class CodeGen {
   //  Addr addr;
   //
   // Guideline:
+  // - add dst to 'allVars' if it is not already there
   // - call gen_addr() to generate code for addr
   // - emit a "mov" to move the result to dst's stack slot
   //   (pay attention to size info)
   //
   static void gen(IR1.Load n) throws Exception {
+    String varName = n.dst.toString();
+    if (!allVars.contains(varName))
+      allVars.add(varName);
 
-    // ... need code ...
+	int idx = allVars.indexOf(n.dst.toString());
+
 	// call gen_addr()
-	X86.Mem addrcode= gen_addr(n.addr, tempReg1);
+	X86.Mem adr= gen_addr(n.addr, tempReg1);
 
 	// emit a mov to mvoe the result to dst's stack slot
-
+	X86.emit2("movslq", adr, tempReg2);
+    X86.emit2("movl", new X86.Reg(11 , X86.Size.L), new X86.Mem(X86.RSP, idx*4)); 
   }
 
   // Store ---  
@@ -331,11 +337,13 @@ class CodeGen {
 
     // ... need code ...
 	// call to_reg()
+	to_reg(n.src, tempReg1);
 
 	// call gen_addr()
+	X86.Mem adr = gen_addr(n.addr, tempReg2);
 
 	// emit a mov
-
+    X86.emit2("movl", new X86.Reg(10 , X86.Size.L), adr); 
   }
 
   // LabelDec ---  
@@ -416,6 +424,13 @@ class CodeGen {
 	X86.emit1("call", new X86.Label(n.gname.toString()));
 	// if retur is expected
 	if (n.rdst != null) {
+      String varName = n.rdst.toString();
+      if (!allVars.contains(varName))
+        allVars.add(varName);
+
+	  int idx = allVars.indexOf(n.rdst.toString());
+
+	  X86.emit2("movl", X86.EAX, new X86.Mem(X86.RSP, idx*4));
 	}
 
   }
@@ -433,7 +448,9 @@ class CodeGen {
     // ... need code ...
 	// if there is a value, emit a mov to move it ot rax
 	if (n.val != null) {
-	  X86.emit("mov");
+	  int idx = allVars.indexOf(n.val.toString());
+
+	  X86.emit2("movslq", new X86.Mem(X86.RSP, idx*4) ,X86.RAX);
 	}
 	// pop the fram
 	X86.emit2("addq", new X86.Imm(frameSize), X86.RSP);
