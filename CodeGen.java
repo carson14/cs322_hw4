@@ -235,7 +235,7 @@ class CodeGen {
 		  case GE:
 		  case LT: X86.emit1("setl", new X86.Reg(10, X86.Size.B)); break;
 		  case LE:
-		  case EQ:
+		  case EQ: X86.emit1("sete", new X86.Reg(10, X86.Size.B)); break;
 		  case NE:
 	   }
 	   X86.emit2("movzbl", new X86.Reg(10, X86.Size.B), new X86.Reg(10, X86.Size.L));
@@ -275,6 +275,7 @@ class CodeGen {
 	if (n.op == IR1.UOP.NOT)
 	  X86.emit1("notq", tempReg1);
 	else if (n.op == IR1.UOP.NEG) {
+	  X86.emit1("negq", tempReg1);
 	}
 	// emit a mov to move the result to dst's stack slot
     X86.emit2("movl", new X86.Reg(10 , X86.Size.L), new X86.Mem(X86.RSP, idx*4)); 
@@ -392,7 +393,7 @@ class CodeGen {
 
     // ... need code ...
 	// generate a jmp to a label
-
+	X86.emit1("jmp", new X86.Label(fnName + "_" + n.lab.name));
   }	
 
   // Call ---
@@ -448,9 +449,13 @@ class CodeGen {
     // ... need code ...
 	// if there is a value, emit a mov to move it ot rax
 	if (n.val != null) {
+	  if (n.val instanceof IR1.IntLit) {
+		to_reg(n.val, X86.RAX);
+	  }
+	  else {
 	  int idx = allVars.indexOf(n.val.toString());
-
 	  X86.emit2("movslq", new X86.Mem(X86.RSP, idx*4) ,X86.RAX);
+	  }
 	}
 	// pop the fram
 	X86.emit2("addq", new X86.Imm(frameSize), X86.RSP);
