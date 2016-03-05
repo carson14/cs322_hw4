@@ -57,6 +57,31 @@ class CodeGen {
     return new X86.Mem(X86.RSP, offset);
   }
 
+  // Return a functions exact temp count
+  //
+  public static int countTemps(IR1.Inst[] code) {
+	int count = 0;
+	for (IR1.Inst i: code) {
+	  if (i instanceof IR1.Binop)
+		if (((IR1.Binop) i).dst instanceof IR1.Temp)
+		  count++;
+	  if (i instanceof IR1.Unop)
+		if (((IR1.Unop) i).dst instanceof IR1.Temp)
+		  count++;
+	  if (i instanceof IR1.Move)
+		if (((IR1.Move) i).dst instanceof IR1.Temp)
+			count++;
+	  if (i instanceof IR1.Load)
+		if (((IR1.Load) i).dst instanceof IR1.Temp)
+		  count++;
+	  if (i instanceof IR1.Call)
+		if (((IR1.Call) i).rdst != null)
+		  if (((IR1.Call) i).rdst instanceof IR1.Temp)
+			count++;
+	}
+	return count;
+  }
+
   //----------------------------------------------------------------------------------
   // Gen Routines
   //--------------
@@ -135,7 +160,7 @@ class CodeGen {
 	  allVars.add(v.toString());
 
 	// allocate a frame for storing all params, vars and temps
-	int instCount = n.code.length;
+	int instCount = countTemps(n.code);
 	int paramCount = n.params.length;
 	int varCount = n.locals.length;
     frameSize = (paramCount + varCount + instCount) * 4;
