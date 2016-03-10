@@ -5,6 +5,15 @@
 // For CS322 W'16 (J. Li).
 //
 
+
+//--------------------------------------------------------------------------
+//**************************************************************************
+// IMPLEMENTED EXACT TEMP COUNT FOR EXTRA CREDIT 
+//**************************************************************************
+//--------------------------------------------------------------------------
+
+
+
 // Naive X86-64 code generator for IR1. (A starter version)
 //
 // - No register allocation; registers are used only as scratch storage.
@@ -60,26 +69,27 @@ class CodeGen {
   // Return a functions exact temp count
   //
   public static int countTemps(IR1.Inst[] code) {
-	int count = 0;
+	Set<String> temps = new HashSet<String>();
 	for (IR1.Inst i: code) {
 	  if (i instanceof IR1.Binop)
 		if (((IR1.Binop) i).dst instanceof IR1.Temp)
-		  count++;
+		  temps.add(((IR1.Binop) i).dst.toString());
 	  if (i instanceof IR1.Unop)
 		if (((IR1.Unop) i).dst instanceof IR1.Temp)
-		  count++;
+		  temps.add(((IR1.Unop) i).dst.toString());
 	  if (i instanceof IR1.Move)
 		if (((IR1.Move) i).dst instanceof IR1.Temp)
-			count++;
+		  temps.add(((IR1.Move) i).dst.toString());
 	  if (i instanceof IR1.Load)
 		if (((IR1.Load) i).dst instanceof IR1.Temp)
-		  count++;
+		  temps.add(((IR1.Load) i).dst.toString());
 	  if (i instanceof IR1.Call)
 		if (((IR1.Call) i).rdst != null)
 		  if (((IR1.Call) i).rdst instanceof IR1.Temp)
-			count++;
+			temps.add(((IR1.Call) i).rdst.toString());
 	}
-	return count;
+	// return the number of unique temps
+	return temps.size();
   }
 
   //----------------------------------------------------------------------------------
